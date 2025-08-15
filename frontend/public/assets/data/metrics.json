@@ -1,0 +1,22 @@
+[
+  {
+    "title": " Total Students",
+    "value": 320,
+    "description": "Total number of registered students"
+  },
+  {
+    "title": " Present Today",
+    "value": 18,
+    "description": "Total number of teachers"
+  },
+  {
+    "title": "Average Attendance",
+    "value": 295,
+    "description": "Students present today"
+  },
+  {
+    "title": " Late Arrivals",
+    "value": 25,
+    "description": "Students late today"
+  }
+]
