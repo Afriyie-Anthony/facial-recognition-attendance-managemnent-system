@@ -9,7 +9,7 @@ const MainLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="flex h-screen bg-[#fff]">
+    <div className="flex h-screen bg-[#f8f9fa]">
       {/* Sidebar: hidden on mobile, visible on md+ */}
       <div className="hidden md:flex">
         <Sidebar />

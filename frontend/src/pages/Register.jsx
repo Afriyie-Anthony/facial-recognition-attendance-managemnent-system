@@ -99,7 +99,7 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-400 to-teal-300">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-500 to-blue-600">
       <style>{`
         @keyframes rotateBorder {
           0% { transform: rotate(0deg); }
@@ -134,7 +134,7 @@ const Register = () => {
         }
       `}</style>
       <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full text-center">
-        <h2 className="mb-6 font-bold text-3xl text-green-500 tracking-wide">Register Student</h2>
+        <h2 className="mb-6 font-bold text-3xl tracking-wide">Register Student</h2>
         {step === 1 ? (
           <form onSubmit={nextStep}>
             <input
@@ -144,7 +144,7 @@ const Register = () => {
               value={form.name}
               onChange={handleChange}
               required
-              className="w-full mb-4 px-4 py-3 rounded-lg border border-green-200 text-lg focus:outline-none focus:border-green-400 transition"
+              className="w-full mb-4 px-4 py-3 rounded-lg border text-lg focus:outline-none focus:border-blue-400 transition"
             />
             <input
               type="email"
@@ -153,7 +153,7 @@ const Register = () => {
               value={form.email}
               onChange={handleChange}
               required
-              className="w-full mb-4 px-4 py-3 rounded-lg border border-green-200 text-lg focus:outline-none focus:border-green-400 transition"
+              className="w-full mb-4 px-4 py-3 rounded-lg border text-lg focus:outline-none focus:border-blue-400 transition"
             />
             <input
               type="text"
@@ -162,14 +162,14 @@ const Register = () => {
               value={form.studentId}
               onChange={handleChange}
               required
-              className="w-full mb-4 px-4 py-3 rounded-lg border border-green-200 text-lg focus:outline-none focus:border-green-400 transition"
+              className="w-full mb-4 px-4 py-3 rounded-lg border text-lg focus:outline-none focus:border-blue-400 transition"
             />
             <select
               name="level"
               value={form.level}
               onChange={handleChange}
               required
-              className="w-full mb-4 px-4 py-3 rounded-lg border border-green-200 text-lg focus:outline-none focus:border-green-400 transition bg-green-50 text-green-600"
+              className="w-full mb-4 px-4 py-3 rounded-lg border text-lg focus:outline-none focus:border-blue-400 transition bg-blue-50 text-blue-600"
             >
               <option value="" disabled>Select Level</option>
               {levels.map(l => (
@@ -183,11 +183,11 @@ const Register = () => {
               value={form.className}
               onChange={handleChange}
               required
-              className="w-full mb-5 px-4 py-3 rounded-lg border border-green-200 text-lg focus:outline-none focus:border-green-400 transition"
+              className="w-full mb-5 px-4 py-3 rounded-lg border border-blue-200 text-lg focus:outline-none focus:border-blue-400 transition"
             />
             <button
               type="submit"
-              className="w-full py-4 rounded-lg font-bold text-xl shadow transition mt-2 bg-gradient-to-r from-green-500 to-teal-400 text-white hover:from-green-600 hover:to-teal-500 cursor-pointer"
+              className="w-full py-4 rounded-lg font-bold text-xl shadow transition mt-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white hover:from-blue-600 hover:to-blue-500 cursor-pointer"
             >
               Next
             </button>
@@ -198,7 +198,7 @@ const Register = () => {
               <div className="webcam-animated-border"></div>
               <div className="webcam-circle">
                 {image ? (
-                  <img src={image} alt="Captured" width={200} height={200} className="rounded-full w-full h-full object-cover" />
+                  <img src={image} alt="Captured" width={250} height={250} className="rounded-full w-full h-full object-cover" />
                 ) : (
                   <Webcam
                     audio={false}
@@ -215,7 +215,7 @@ const Register = () => {
               <button
                 type="button"
                 onClick={capture}
-                className="mt-2 w-full py-3 rounded-lg bg-gradient-to-r from-green-400 to-teal-400 text-white font-semibold text-lg shadow hover:from-green-500 hover:to-teal-500 transition"
+                className="mt-2 w-full py-3 rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold text-lg shadow hover:from-blue-600 hover:to-blue-700 transition"
               >
                 Capture Image
               </button>
@@ -224,7 +224,7 @@ const Register = () => {
               <button
                 type="button"
                 onClick={() => setImage(null)}
-                className="mt-2 w-full py-3 rounded-lg bg-gradient-to-r from-teal-400 to-green-400 text-white font-semibold text-lg shadow hover:from-teal-500 hover:to-green-500 transition"
+                className="mt-2 w-full py-3 rounded-lg bg-gradient-to-r from-blue-400 to-blue-400 text-white font-semibold text-lg shadow hover:from-blue-500 hover:to-blue-500 transition"
               >
                 Retake Image
               </button>
@@ -233,14 +233,14 @@ const Register = () => {
             <button
               type="submit"
               disabled={loading}
-              className={`w-full py-4 rounded-lg font-bold text-xl shadow transition mt-2 ${loading ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-gradient-to-r from-green-500 to-teal-400 text-white hover:from-green-600 hover:to-teal-500 cursor-pointer'}`}
+              className={`w-full py-4 rounded-lg font-bold text-xl shadow transition mt-2 ${loading ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-gradient-to-r from-blue-500 to-blue-400 text-white hover:from-blue-600 hover:to-blue-500 cursor-pointer'}`}
             >
               {loading ? 'Registering...' : 'Register'}
             </button>
             <button
               type="button"
               onClick={() => setStep(1)}
-              className="w-full py-2 rounded-lg font-semibold text-green-500 mt-2 border border-green-300 hover:bg-green-50 transition"
+              className="w-full py-2 rounded-lg font-semibold text-blue-500 mt-2 border border-blue-300 hover:bg-blue-50 transition"
             >
               Back
             </button>

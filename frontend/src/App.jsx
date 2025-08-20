@@ -5,6 +5,8 @@ import TakeAttendance from "./pages/TakeAttendance";
 import TeacherMainLayout from "./components/teacher/layout.tsx/MainLayout";
 import TeachersDashboard from "./pages/teacher/Dashboard";
 import Students from "./pages/teacher/Students";
+import AttendanceRecords from "./pages/teacher/AttendanceRecords";
+import Settings from "./pages/teacher/Settings";
 
 function App() {
   return (
@@ -15,6 +17,8 @@ function App() {
         <Route path="/teacher" element={<TeacherMainLayout />}>
           <Route index element={<TeachersDashboard />} />
           <Route path="students" element={<Students />} />
+          <Route path="attendance-records" element={<AttendanceRecords />} />
+          <Route path="settings" element={<Settings/>} />
         </Route>
       </Routes>
     </BrowserRouter>

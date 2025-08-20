@@ -15,12 +15,12 @@ const navItems = [
   },
   {
     label: "Attendance Records",
-    to: "/attendance-records",
+    to: "attendance-records",
     icon: <ClipboardList size={20} className="" />,
   },
   {
     label: "Settings",
-    to: "/settings",
+    to: "settings",
     icon: <Settings size={20} className="" />,
   },
 ];
