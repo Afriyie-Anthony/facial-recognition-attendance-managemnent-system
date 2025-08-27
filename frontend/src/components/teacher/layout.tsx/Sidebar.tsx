@@ -1,38 +1,38 @@
 import React from "react";
-import { Link, useLocation } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { BarChart2, Users, ClipboardList, Settings } from "lucide-react";
 
 const navItems = [
   {
     label: "Dashboard",
     to: "/teacher",
-    icon: <BarChart2 size={20} className="" />,
+    icon: <BarChart2 size={20} />,
+    end: true,
   },
   {
     label: "Students",
     to: "students",
-    icon: <Users size={20} className="" />,
+    icon: <Users size={20} />,
   },
   {
     label: "Attendance Records",
     to: "attendance-records",
-    icon: <ClipboardList size={20} className="" />,
+    icon: <ClipboardList size={20} />,
   },
   {
     label: "Settings",
     to: "settings",
-    icon: <Settings size={20} className="" />,
+    icon: <Settings size={20} />,
   },
 ];
 
 const Sidebar = () => {
-  const location = useLocation();
   return (
     <aside className="h-screen w-64 shadow bg-white border-r border-gray-200 flex flex-col justify-between">
       <div>
         <div className="flex items-center justify-between px-6 pt-5">
           <div>
-            <div className="text-xl font-bold text-blue-500">TeacherSync</div>
+            <div className="text-xl font-bold text-blue-500">AdminSync</div>
             <div className="text-xs text-gray-400 font-medium mt-1">
               Facial Attendance
             </div>
@@ -44,30 +44,30 @@ const Sidebar = () => {
         <hr className="my-3 border-gray-200" />
         <nav className="px-4 pt-5">
           <ul className="space-y-2">
-            {navItems.map((item) => {
-              const isActive = location.pathname === item.to;
-              return (
-                <li key={item.to}>
-                  <Link
-                    to={item.to}
-                    className={`flex items-center gap-3 px-2 py-3 rounded-lg font-medium text-base transition-colors ${
+            {navItems.map((item) => (
+              <li key={item.to}>
+                <NavLink
+                  to={item.to}
+                  end={item.end}
+                  className={({ isActive }) =>
+                    `flex items-center gap-3 px-2 py-3 rounded-lg font-medium text-base transition-colors ${
                       isActive
                         ? "bg-blue-500 text-white font-semibold"
                         : "hover:bg-gray-100 text-gray-800"
-                    }`}
-                  >
-                    <span
-                      className={
-                        isActive ? "text-white bg-blue-500" : "text-gray-500"
-                      }
-                    >
-                      {item.icon}
-                    </span>
-                    {item.label}
-                  </Link>
-                </li>
-              );
-            })}
+                    }`
+                  }
+                >
+                  {({ isActive }) => (
+                    <>
+                      <span className={isActive ? "text-white" : "text-gray-500"}>
+                        {item.icon}
+                      </span>
+                      {item.label}
+                    </>
+                  )}
+                </NavLink>
+              </li>
+            ))}
           </ul>
         </nav>
       </div>

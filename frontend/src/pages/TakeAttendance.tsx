@@ -19,6 +19,7 @@ const TakeAttendance = () => {
   const handleAttendance = async () => {
     if (!image) return;
     setLoading(true);
+    setResults([]); // Clear previous results
     try {
       const res = await fetch('/attendance', {
         method: 'POST',
@@ -28,93 +29,154 @@ const TakeAttendance = () => {
       const data = await res.json();
       if (res.ok && Array.isArray(data) && data.length > 0) {
         setResults(data);
+        MySwal.fire({
+          toast: true,
+          position: 'top-end',
+          icon: 'success',
+          title: `${data.length} student(s) matched!`,
+          showConfirmButton: false,
+          timer: 3000,
+        });
       } else {
         setResults([]);
         MySwal.fire({
           toast: true,
           position: 'top-end',
           icon: 'error',
-          title: 'No face detected',
+          title: data.message || 'No face detected or student not found.',
           showConfirmButton: false,
-          timer: 2000,
+          timer: 3000,
         });
       }
-    } catch {
+    } catch (error) {
       MySwal.fire({
         toast: true,
         position: 'top-end',
         icon: 'error',
-        title: 'Network error',
+        title: 'An error occurred. Please try again.',
         showConfirmButton: false,
-        timer: 2000,
+        timer: 3000,
       });
     }
     setLoading(false);
   };
 
+  const videoConstraints = {
+    width: 500,
+    height: 500,
+    facingMode: 'user',
+  };
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-400 to-teal-300">
-      <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full text-center">
-        <h2 className="mb-6 font-bold text-3xl text-green-500 tracking-wide">Take Attendance</h2>
-        <div className="flex flex-col items-center mb-4">
-          <div className="rounded-full overflow-hidden border-4 border-green-400 mb-4" style={{ width: 200, height: 200 }}>
-            {image ? (
-              <img src={image} alt="Captured" className="w-full h-full object-cover" />
+    <>
+      <style>{`
+        .webcam-animated-border {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          width: 272px; /* 256px (w-64) + 16px */
+          height: 272px; /* 256px (h-64) + 16px */
+          border-radius: 50%;
+          border: 4px solid #60a5fa; /* teal-400 */
+          border-top-color: #3b82f6; /* teal-600 */
+          animation: spin 1.5s linear infinite;
+          z-index: 10;
+        }
+
+        @keyframes spin {
+          to {
+            transform: translate(-50%, -50%) rotate(360deg);
+          }
+        }
+      `}</style>
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 dark:bg-gray-900 p-4">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 max-w-lg w-full">
+          <h2 className="mb-6 font-bold text-3xl text-gray-800 dark:text-white text-center tracking-wide">
+            Take Attendance
+          </h2>
+
+          <div className="flex flex-col items-center mb-6">
+            <div className="relative w-64 h-64">
+              {loading && <div className="webcam-animated-border"></div>}
+              <div className="w-64 h-64 rounded-full overflow-hidden border-4 border-blue-400 dark:border-blue-500 shadow-lg mx-auto">
+                {image ? (
+                  <img src={image} alt="Captured" className="w-full h-full object-cover" />
+                ) : (
+                  <Webcam
+                    audio={false}
+                    ref={webcamRef}
+                    screenshotFormat="image/jpeg"
+                    videoConstraints={videoConstraints}
+                    className="w-full h-full object-cover"
+                  />
+                )}
+              </div>
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            {!image ? (
+              <button
+                type="button"
+                onClick={capture}
+                className="w-full py-3 rounded-lg bg-blue-500 text-white font-semibold text-lg shadow-md hover:bg-teal-600 transition duration-300"
+              >
+                Capture Image
+              </button>
             ) : (
-              <Webcam
-                audio={false}
-                ref={webcamRef}
-                screenshotFormat="image/jpeg"
-                width={200}
-                height={200}
-                className="w-full h-full object-cover rounded-full"
-              />
+              <div className="flex gap-4">
+                <button
+                  type="button"
+                  onClick={() => setImage(null)}
+                  className="w-full py-3 rounded-lg bg-gray-200 dark:bg-gray-600 dark:text-white text-gray-800 font-semibold text-lg shadow-md hover:bg-gray-300 dark:hover:bg-gray-500 transition duration-300"
+                >
+                  Retake
+                </button>
+                <button
+                  type="button"
+                  onClick={handleAttendance}
+                  disabled={loading}
+                  className="w-full py-3 rounded-lg bg-blue-500 text-white font-semibold text-lg shadow-md hover:bg-blue-600 transition duration-300 disabled:bg-gray-400 disabled:cursor-not-allowed"
+                >
+                  {loading ? 'Checking...' : 'Submit'}
+                </button>
+              </div>
             )}
           </div>
-          {!image && (
-            <button
-              type="button"
-              onClick={capture}
-              className="w-full py-3 rounded-lg bg-gradient-to-r from-green-400 to-teal-400 text-white font-semibold text-lg shadow hover:from-green-500 hover:to-teal-500 transition mb-2"
-            >
-              Capture Image
-            </button>
+
+          {results.length > 0 && (
+            <div className="mt-8 text-left">
+              <h3 className="font-bold text-xl mb-4 text-gray-700 dark:text-gray-200 text-center">
+                Matched Students
+              </h3>
+              <ul className="space-y-4">
+                {results.map((student, idx) => (
+                  <li
+                    key={idx}
+                    className="p-4 rounded-xl bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 shadow-sm"
+                  >
+                    <div className="grid grid-cols-2 gap-x-4 gap-y-2">
+                      <div className="font-semibold text-gray-600 dark:text-gray-300">Name:</div>
+                      <div className="text-gray-800 dark:text-white">{student.name}</div>
+
+                      <div className="font-semibold text-gray-600 dark:text-gray-300">Class:</div>
+                      <div className="text-gray-800 dark:text-white">{student.className}</div>
+
+                      <div className="font-semibold text-gray-600 dark:text-gray-300">Level:</div>
+                      <div className="text-gray-800 dark:text-white">{student.level}</div>
+
+                      <div className="font-semibold text-gray-600 dark:text-gray-300">Index No:</div>
+                      <div className="text-gray-800 dark:text-white">{student.studentId}</div>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
           )}
-          {image && (
-            <button
-              type="button"
-              onClick={() => setImage(null)}
-              className="w-full py-3 rounded-lg bg-gradient-to-r from-teal-400 to-green-400 text-white font-semibold text-lg shadow hover:from-teal-500 hover:to-green-500 transition mb-2"
-            >
-              Retake Image
-            </button>
-          )}
-          <button
-            type="button"
-            onClick={handleAttendance}
-            disabled={!image || loading}
-            className={`w-full py-3 rounded-lg font-bold text-xl shadow transition mt-2 ${(!image || loading) ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-gradient-to-r from-green-500 to-teal-400 text-white hover:from-green-600 hover:to-teal-500 cursor-pointer'}`}
-          >
-            {loading ? 'Checking...' : 'Submit Attendance'}
-          </button>
         </div>
-        {results.length > 0 && (
-          <div className="mt-6 text-left">
-            <h3 className="font-bold text-lg mb-2 text-green-600">Matched Students</h3>
-            <ul>
-              {results.map((student, idx) => (
-                <li key={idx} className="mb-3 p-3 rounded-lg bg-green-50 border border-green-100">
-                  <div><span className="font-semibold">Name:</span> {student.name}</div>
-                  <div><span className="font-semibold">Class:</span> {student.className}</div>
-                  <div><span className="font-semibold">Level:</span> {student.level}</div>
-                  <div><span className="font-semibold">Index Number:</span> {student.studentId}</div>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
       </div>
-    </div>
+    </>
   );
 };
 

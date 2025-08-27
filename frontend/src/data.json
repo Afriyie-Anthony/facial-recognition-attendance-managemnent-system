@@ -1,0 +1,141 @@
+	"students": [
+		{
+			"id": "ST001",
+			"fullName": "Emma Wilson",
+			"email": "emma.wilson@example.com",
+			"class": "Math 101",
+			"attendancePercent": 95,
+			"status": "active",
+			"lastSeen": "2025-08-15T08:00:00Z",
+			"profileImage": null,
+			"attendanceRecords": [
+				{ "date": "2025-08-14", "status": "present", "time": "08:05" },
+				{ "date": "2025-08-13", "status": "late", "time": "08:20" }
+			]
+		},
+		{
+			"id": "ST002",
+			"fullName": "James Rodriguez",
+			"email": "james.rodriguez@example.com",
+			"class": "Math 101",
+			"attendancePercent": 87,
+			"status": "active",
+			"lastSeen": "2025-08-14T10:00:00Z",
+			"profileImage": null,
+			"attendanceRecords": [
+				{ "date": "2025-08-14", "status": "present", "time": "08:00" },
+				{ "date": "2025-08-13", "status": "absent" }
+			]
+		},
+		{
+			"id": "ST003",
+			"fullName": "Sarah Chen",
+			"email": "sarah.chen@example.com",
+			"class": "Physics 201",
+			"attendancePercent": 92,
+			"status": "active",
+			"lastSeen": "2025-08-15T09:00:00Z",
+			"profileImage": null,
+			"attendanceRecords": [
+				{ "date": "2025-08-14", "status": "present", "time": "08:10" },
+				{ "date": "2025-08-13", "status": "present", "time": "08:00" }
+			]
+		},
+		{
+			"id": "ST004",
+			"fullName": "Michael Brown",
+			"email": "michael.brown@example.com",
+			"class": "Chemistry 301",
+			"attendancePercent": 67,
+			"status": "inactive",
+			"lastSeen": "2025-08-08T08:00:00Z",
+			"profileImage": null,
+			"attendanceRecords": [
+				{ "date": "2025-08-14", "status": "absent" },
+				{ "date": "2025-08-13", "status": "absent" }
+			]
+		}
+	],
+	
+	"attendanceRecords": [
+		{
+			"id": "AR001",
+			"studentId": "ST001",
+			"date": "2025-08-14",
+			"status": "present",
+			"time": "08:05"
+		},
+		{
+			"id": "AR002",
+			"studentId": "ST002",
+			"date": "2025-08-14",
+			"status": "present",
+			"time": "08:00"
+		}
+	],
+		"metrics": [
+			{
+				"title": "Present",
+				"value": 2
+			},
+			{
+				"title": "Late",
+				"value": 2
+			},
+			{
+				"title": "Absent",
+				"value": 1
+			},
+			{
+				"title": "Total",
+				"value": 5
+			}
+		]
+	,
+	"api": {
+		"register": {
+			"method": "POST",
+			"endpoint": "/api/register",
+			"request": {
+				"fullName": "string",
+				"email": "string",
+				"studentId": "string",
+				"class": "string",
+				"profileImage": "base64string or file"
+			},
+			"response": {
+				"success": true,
+				"student": {
+					"id": "ST005",
+					"fullName": "string",
+					"email": "string",
+					"class": "string",
+					"status": "active",
+					"profileImage": "url or base64"
+				},
+				"message": "Student registered successfully."
+			}
+		},
+		"takeAttendance": {
+			"method": "POST",
+			"endpoint": "/api/attendance",
+			"request": {
+				"image": "base64string or file"
+			},
+			"response": {
+				"success": true,
+				"matchedStudents": [
+					{
+						"id": "ST001",
+						"fullName": "Emma Wilson",
+						"email": "emma.wilson@example.com",
+						"class": "Math 101",
+						"status": "present",
+						"time": "08:05"
+					}
+				],
+				"message": "Attendance recorded."
+			}
+		}
+	}
+}

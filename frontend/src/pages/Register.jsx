@@ -2,6 +2,17 @@ import React, { useRef, useState } from 'react';
 import Webcam from 'react-webcam';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
+import {
+  User,
+  Mail,
+  Hash,
+  GraduationCap,
+  School,
+  Camera,
+  ArrowLeft,
+  ArrowRight,
+  RefreshCw,
+} from 'lucide-react';
 
 const MySwal = withReactContent(Swal);
 
@@ -11,10 +22,8 @@ const Register = () => {
     name: '',
     email: '',
     studentId: '',
-    level: '',
     className: '',
   });
-  const levels = ['100', '200', '300', '400', '500', '600'];
   const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState(1);
@@ -25,7 +34,19 @@ const Register = () => {
 
   const nextStep = (e) => {
     e.preventDefault();
-    setStep(2);
+    // Basic validation check
+    if (form.name && form.email && form.studentId && form.className) {
+      setStep(2);
+    } else {
+      MySwal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'warning',
+        title: 'Please fill all fields',
+        showConfirmButton: false,
+        timer: 2000,
+      });
+    }
   };
 
   const capture = () => {
@@ -48,7 +69,8 @@ const Register = () => {
     }
     setLoading(true);
     try {
-      const res = await fetch('/register', {
+      // NOTE: Using a placeholder URL. Replace with your actual API endpoint.
+      const res = await fetch('http://localhost:5000/api/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -59,191 +81,200 @@ const Register = () => {
       const data = await res.json();
       if (res.ok) {
         MySwal.fire({
-          toast: true,
-          position: 'top-end',
           icon: 'success',
-          title: 'Registration successful!',
+          title: 'Registration Successful!',
+          text: 'You have been successfully registered.',
           showConfirmButton: false,
-          timer: 2000,
+          timer: 2500,
         });
         setForm({
           name: '',
           email: '',
           studentId: '',
-          level: '',
           className: '',
         });
         setImage(null);
         setStep(1);
       } else {
         MySwal.fire({
-          toast: true,
-          position: 'top-end',
           icon: 'error',
-          title: data.message || 'Registration failed',
-          showConfirmButton: false,
-          timer: 2000,
+          title: 'Registration Failed',
+          text: data.message || 'An error occurred during registration.',
         });
       }
-    } catch {
+    } catch (error) {
       MySwal.fire({
-        toast: true,
-        position: 'top-end',
         icon: 'error',
-        title: 'Network error',
-        showConfirmButton: false,
-        timer: 2000,
+        title: 'Network Error',
+        text: 'Could not connect to the server. Please try again later.',
       });
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
+  const InputField = ({ icon, ...props }) => (
+    <div className="relative mb-4">
+      <span className="absolute top-1/2 left-4 transform -translate-y-1/2 text-gray-400">
+        {icon}
+      </span>
+      <input
+        {...props}
+        className="w-full pl-12 pr-4 py-3 rounded-lg border border-gray-300 bg-gray-50 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+      />
+    </div>
+  );
+
+  const SelectField = ({ icon, children, ...props }) => (
+    <div className="relative mb-4">
+      <span className="absolute top-1/2 left-4 transform -translate-y-1/2 text-gray-400">
+        {icon}
+      </span>
+      <select
+        {...props}
+        className="w-full pl-12 pr-4 py-3 rounded-lg border border-gray-300 bg-gray-50 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition appearance-none"
+      >
+        {children}
+      </select>
+      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+        <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+      </div>
+    </div>
+  );
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-500 to-blue-600">
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
+      {/* 
+        The <style> tag is used here for the keyframe animation, 
+        as it's a simple way to include it without modifying global CSS files for this component-specific animation.
+      */}
       <style>{`
         @keyframes rotateBorder {
           0% { transform: rotate(0deg); }
           100% { transform: rotate(360deg); }
         }
-        .webcam-border {
-          position: relative;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          margin-bottom: 1.5rem;
-        }
         .webcam-animated-border {
           position: absolute;
-          top: 0; left: 0; right: 0; bottom: 0;
-          margin: auto;
-          width: 220px;
-          height: 220px;
+          top: -2%; left: 23.3%;
+          transform: translate(-50%, -50%);
+          width: 232px; /* 224px (webcam) + 8px (border) */
+          height: 232px; /* 224px (webcam) + 8px (border) */
           border-radius: 50%;
-          border: 6px solid #22c55e;
-          border-top: 6px solid #2dd4bf;
+          border: 4px solid #60a5fa; /* blue-400 */
+          border-top-color: #3b82f6; /* blue-500 */
           animation: rotateBorder 2s linear infinite;
           z-index: 1;
         }
-        .webcam-circle {
-          border-radius: 50%;
-          overflow: hidden;
-          width: 200px;
-          height: 200px;
-          box-shadow: 0 2px 16px rgba(34,197,94,0.15);
-          z-index: 2;
-        }
       `}</style>
-      <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full text-center">
-        <h2 className="mb-6 font-bold text-3xl tracking-wide">Register Student</h2>
+      <div className="bg-white rounded-2xl shadow-xl p-6 sm:p-10 max-w-lg w-full">
+        <div className="flex justify-between items-center mb-2">
+          <h2 className="font-bold text-2xl sm:text-3xl tracking-wide text-gray-800">Register Student</h2>
+          <span className="text-gray-500 font-medium text-sm">Step {step} of 2</span>
+        </div>
+        <p className="text-gray-500 mb-8 text-sm">
+          {step === 1 ? 'Please fill in your details to proceed.' : 'Position your face in the center and capture.'}
+        </p>
+
         {step === 1 ? (
           <form onSubmit={nextStep}>
-            <input
+            <InputField
+              icon={<User size={20} />}
               type="text"
               name="name"
-              placeholder="Name"
+              placeholder="Full Name"
               value={form.name}
               onChange={handleChange}
               required
-              className="w-full mb-4 px-4 py-3 rounded-lg border text-lg focus:outline-none focus:border-blue-400 transition"
             />
-            <input
+            <InputField
+              icon={<Mail size={20} />}
               type="email"
               name="email"
-              placeholder="Email"
+              placeholder="Email Address"
               value={form.email}
               onChange={handleChange}
               required
-              className="w-full mb-4 px-4 py-3 rounded-lg border text-lg focus:outline-none focus:border-blue-400 transition"
             />
-            <input
+            <InputField
+              icon={<Hash size={20} />}
               type="text"
               name="studentId"
               placeholder="Student ID"
               value={form.studentId}
               onChange={handleChange}
               required
-              className="w-full mb-4 px-4 py-3 rounded-lg border text-lg focus:outline-none focus:border-blue-400 transition"
             />
-            <select
-              name="level"
-              value={form.level}
-              onChange={handleChange}
-              required
-              className="w-full mb-4 px-4 py-3 rounded-lg border text-lg focus:outline-none focus:border-blue-400 transition bg-blue-50 text-blue-600"
-            >
-              <option value="" disabled>Select Level</option>
-              {levels.map(l => (
-                <option key={l} value={l}>{l}</option>
-              ))}
-            </select>
-            <input
+            <InputField
+              icon={<School size={20} />}
               type="text"
               name="className"
-              placeholder="Class"
+              placeholder="Class Name (e.g., Computer Science)"
               value={form.className}
               onChange={handleChange}
               required
-              className="w-full mb-5 px-4 py-3 rounded-lg border border-blue-200 text-lg focus:outline-none focus:border-blue-400 transition"
             />
             <button
               type="submit"
-              className="w-full py-4 rounded-lg font-bold text-xl shadow transition mt-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white hover:from-blue-600 hover:to-blue-500 cursor-pointer"
+              className="w-full flex items-center justify-center gap-2 py-3 rounded-lg font-semibold text-lg shadow-md transition mt-4 bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
             >
-              Next
+              Next <ArrowRight size={20} />
             </button>
           </form>
         ) : (
           <form onSubmit={handleSubmit}>
-            <div className="webcam-border">
+            <div className="relative w-full flex justify-center mb-6">
               <div className="webcam-animated-border"></div>
-              <div className="webcam-circle">
+              <div className="w-56 h-56 rounded-full overflow-hidden shadow-lg relative z-10 bg-gray-200">
                 {image ? (
-                  <img src={image} alt="Captured" width={250} height={250} className="rounded-full w-full h-full object-cover" />
+                  <img src={image} alt="Captured" className="w-full h-full object-cover" />
                 ) : (
                   <Webcam
                     audio={false}
                     ref={webcamRef}
                     screenshotFormat="image/jpeg"
-                    width={200}
-                    height={200}
-                    style={{ borderRadius: '50%', objectFit: 'cover', width: '100%', height: '100%' }}
+                    videoConstraints={{ width: 400, height: 400, facingMode: "user" }}
+                    className="w-full h-full object-cover"
                   />
                 )}
               </div>
             </div>
-            {!image && (
+            
+            <div className="flex gap-4 mb-6">
+              {!image ? (
+                <button
+                  type="button"
+                  onClick={capture}
+                  className="flex-1 flex items-center justify-center gap-2 py-3 rounded-lg bg-blue-600 text-white font-semibold text-lg shadow-md hover:bg-blue-700 transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                >
+                  <Camera size={20} /> Capture
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setImage(null)}
+                  className="flex-1 flex items-center justify-center gap-2 py-3 rounded-lg bg-gray-500 text-white font-semibold text-lg shadow-md hover:bg-gray-600 transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400"
+                >
+                  <RefreshCw size={20} /> Retake
+                </button>
+              )}
+            </div>
+
+            <div className="space-y-3">
+              <button
+                type="submit"
+                disabled={loading || !image}
+                className="w-full py-3 rounded-lg font-bold text-lg shadow-md transition bg-blue-600 text-white hover:bg-blue-700 disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed"
+              >
+                {loading ? 'Registering...' : 'Complete Registration'}
+              </button>
               <button
                 type="button"
-                onClick={capture}
-                className="mt-2 w-full py-3 rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold text-lg shadow hover:from-blue-600 hover:to-blue-700 transition"
+                onClick={() => setStep(1)}
+                className="w-full flex items-center justify-center gap-2 py-3 rounded-lg font-semibold text-gray-600 border border-gray-300 hover:bg-gray-100 transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400"
               >
-                Capture Image
+                <ArrowLeft size={20} /> Back
               </button>
-            )}
-            {image && (
-              <button
-                type="button"
-                onClick={() => setImage(null)}
-                className="mt-2 w-full py-3 rounded-lg bg-gradient-to-r from-blue-400 to-blue-400 text-white font-semibold text-lg shadow hover:from-blue-500 hover:to-blue-500 transition"
-              >
-                Retake Image
-              </button>
-            )}
-            {/* No image preview below the main image */}
-            <button
-              type="submit"
-              disabled={loading}
-              className={`w-full py-4 rounded-lg font-bold text-xl shadow transition mt-2 ${loading ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-gradient-to-r from-blue-500 to-blue-400 text-white hover:from-blue-600 hover:to-blue-500 cursor-pointer'}`}
-            >
-              {loading ? 'Registering...' : 'Register'}
-            </button>
-            <button
-              type="button"
-              onClick={() => setStep(1)}
-              className="w-full py-2 rounded-lg font-semibold text-blue-500 mt-2 border border-blue-300 hover:bg-blue-50 transition"
-            >
-              Back
-            </button>
+            </div>
           </form>
         )}
       </div>
