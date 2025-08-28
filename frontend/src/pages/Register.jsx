@@ -68,15 +68,35 @@ const Register = () => {
       return;
     }
     setLoading(true);
+
+    const BASE_URL = "https://facial-recognition-backend-rmti.onrender.com";
+
+    // Helper function to convert base64 to Blob
+    const dataURLtoBlob = (dataurl) => {
+      const arr = dataurl.split(',');
+      const mime = arr[0].match(/:(.*?);/)[1];
+      const bstr = atob(arr[1]);
+      let n = bstr.length;
+      const u8arr = new Uint8Array(n);
+      while (n--) {
+        u8arr[n] = bstr.charCodeAt(n);
+      }
+      return new Blob([u8arr], { type: mime });
+    };
+
     try {
-      // NOTE: Using a placeholder URL. Replace with your actual API endpoint.
-      const res = await fetch('http://localhost:5000/api/register', {
+      const formData = new FormData();
+      formData.append('studentId', form.studentId);
+      formData.append('fullName', form.name);
+      formData.append('email', form.email);
+      formData.append('class', form.className);
+
+      const imageBlob = dataURLtoBlob(image);
+      formData.append('profileImage', imageBlob, 'profile.jpeg'); // 'profile.jpeg' is the filename
+
+      const res = await fetch(`${BASE_URL}/api/register`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...form,
-          image,
-        }),
+        body: formData,
       });
       const data = await res.json();
       if (res.ok) {

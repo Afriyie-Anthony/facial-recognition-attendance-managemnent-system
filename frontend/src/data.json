@@ -73,7 +73,7 @@
 			"time": "08:00"
 		}
 	],
-		"metrics": [
+		"AttendanceMetrics": [
 			{
 				"title": "Present",
 				"value": 2
@@ -139,3 +139,34 @@
 		}
 	}
 }
+"DashboardMetrics":[
+  {
+    "title": " Total Students",
+    "value": 320,
+    "description": "Total number of registered students"
+  },
+  {
+    "title": " Present Today",
+    "value": 18,
+    "description": "Total number of teachers"
+  },
+  {
+    "title": "Average Attendance",
+    "value": 295,
+    "description": "Students present today"
+  },
+  {
+    "title": " Late Arrivals",
+    "value": 25,
+    "description": "Students late today"
+  }
+]
+
+"chart": [
+    { "day": "Mon", "present": 29, "absent": 3 },
+    { "day": "Tue", "present": 31, "absent": 1 },
+    { "day": "Wed", "present": 27, "absent": 4 },
+    { "day": "Thu", "present": 30, "absent": 2 },
+    { "day": "Fri", "present": 24, "absent": 6 },
+    { "day": "Sat", "present": 18, "absent": 9 }
+  ]

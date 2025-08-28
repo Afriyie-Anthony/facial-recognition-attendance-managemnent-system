@@ -20,20 +20,23 @@ const TakeAttendance = () => {
     if (!image) return;
     setLoading(true);
     setResults([]); // Clear previous results
+
+    const BASE_URL = "https://facial-recognition-backend-rmti.onrender.com";
+
     try {
-      const res = await fetch('/attendance', {
+      const res = await fetch(`${BASE_URL}/api/v1/attendance`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ image }),
       });
       const data = await res.json();
-      if (res.ok && Array.isArray(data) && data.length > 0) {
-        setResults(data);
+      if (res.ok && data.success && Array.isArray(data.matchedStudents) && data.matchedStudents.length > 0) {
+        setResults(data.matchedStudents);
         MySwal.fire({
           toast: true,
           position: 'top-end',
           icon: 'success',
-          title: `${data.length} student(s) matched!`,
+          title: `${data.matchedStudents.length} student(s) matched!`,
           showConfirmButton: false,
           timer: 3000,
         });
@@ -158,16 +161,13 @@ const TakeAttendance = () => {
                   >
                     <div className="grid grid-cols-2 gap-x-4 gap-y-2">
                       <div className="font-semibold text-gray-600 dark:text-gray-300">Name:</div>
-                      <div className="text-gray-800 dark:text-white">{student.name}</div>
+                      <div className="text-gray-800 dark:text-white">{student.fullName}</div>
 
                       <div className="font-semibold text-gray-600 dark:text-gray-300">Class:</div>
-                      <div className="text-gray-800 dark:text-white">{student.className}</div>
-
-                      <div className="font-semibold text-gray-600 dark:text-gray-300">Level:</div>
-                      <div className="text-gray-800 dark:text-white">{student.level}</div>
+                      <div className="text-gray-800 dark:text-white">{student.class}</div>
 
                       <div className="font-semibold text-gray-600 dark:text-gray-300">Index No:</div>
-                      <div className="text-gray-800 dark:text-white">{student.studentId}</div>
+                      <div className="text-gray-800 dark:text-white">{student.id}</div>
                     </div>
                   </li>
                 ))}
